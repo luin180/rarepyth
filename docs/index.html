@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rarepyth & mace_al_glo — Documentation</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --fg: #c9d1d9;
+    --border: #30363d;
+    --link: #58a6ff;
+    --accent: #f78166;
+    --code-bg: #161b22;
+    --header-bg: #010409;
+    --row-even: #0d1117;
+    --row-odd: #161b22;
+    --type-color: #ffa657;
+    --func-color: #d2a8ff;
+    --class-color: #7ee787;
+    --param-color: #79c0ff;
+    --sidebar-bg: #0d1117;
+    --active-nav: #1f6feb33;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  nav#sidebar {
+    width: 300px;
+    min-width: 300px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-size: 14px;
+  }
+  nav#sidebar h2 {
+    font-size: 16px;
+    padding: 8px 20px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 12px;
+  }
+  nav#sidebar h2:first-child { margin-top: 0; }
+  nav#sidebar a {
+    display: block;
+    padding: 5px 20px 5px 28px;
+    color: var(--fg);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  nav#sidebar a:hover { background: var(--active-nav); }
+  nav#sidebar a.active {
+    border-left-color: var(--accent);
+    background: var(--active-nav);
+    color: #fff;
+  }
+  nav#sidebar .module-link { padding-left: 36px; font-size: 13px; }
+
+  /* ── Main content ── */
+  main {
+    flex: 1;
+    padding: 40px 60px;
+    max-width: 1100px;
+    min-width: 0;
+  }
+  main h1 {
+    font-size: 32px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+  main h2 {
+    font-size: 24px;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  main h3 {
+    font-size: 18px;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--accent);
+  }
+  main h4 {
+    font-size: 16px;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    color: #e3b341;
+  }
+  main p { margin-bottom: 12px; }
+  main a { color: var(--link); text-decoration: none; }
+  main a:hover { text-decoration: underline; }
+  main ul, main ol { margin: 0 0 16px 24px; }
+  main li { margin-bottom: 4px; }
+
+  /* ── Code ── */
+  code {
+    font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 12px 0 20px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  th {
+    background: var(--header-bg);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  tr:nth-child(even) td { background: var(--row-even); }
+  tr:nth-child(odd) td { background: var(--row-odd); }
+
+  /* ── Signature spans ── */
+  .sig {
+    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    font-size: 13px;
+    color: #e6edf3;
+  }
+  .sig .kw  { color: #ff7b72; }
+  .sig .cls { color: var(--class-color); }
+  .sig .fn  { color: var(--func-color); }
+  .sig .tp  { color: var(--type-color); }
+  .sig .prm { color: var(--param-color); }
+  .sig .com { color: #8b949e; }
+
+  .tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+  .tag-class    { background: #1b3c29; color: #7ee787; }
+  .tag-func     { background: #2a1b3c; color: #d2a8ff; }
+  .tag-method   { background: #2a1b3c; color: #d2a8ff; }
+  .tag-module   { background: #1b2d3c; color: #79c0ff; }
+  .tag-prop     { background: #3c2a1b; color: #ffa657; }
+  .tag-exc      { background: #3c1b1b; color: #ff7b72; }
+  .tag-const    { background: #1b2d3c; color: #79c0ff; }
+
+  /* ── Flow diagram ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .flow .step {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 16px;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .flow .arrow { color: var(--accent); font-size: 18px; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-unix { background: #1b3c29; color: #7ee787; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    body { flex-direction: column; }
+    nav#sidebar {
+      width: 100%; min-width: 100%; height: auto; position: static;
+      border-right: none; border-bottom: 1px solid var(--border);
+      max-height: 240px;
+    }
+    main { padding: 20px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<nav id="sidebar">
+  <h2>Overview</h2>
+  <a href="#overview">Project Overview</a>
+  <a href="#dependencies">Dependencies</a>
+
+  <h2>rarepyth Library</h2>
+  <a href="#rp-base" class="module-link">base — Core Utilities</a>
+  <a href="#rp-utils" class="module-link">utils — General Utilities</a>
+  <a href="#rp-mace-dataio" class="module-link">mace/data_io — I/O</a>
+  <a href="#rp-mace-matcher" class="module-link">mace/matcher — Equivalence</a>
+  <a href="#rp-mace-optimizer" class="module-link">mace/optimizer — Optimization</a>
+  <a href="#rp-mace-thermo" class="module-link">mace/thermo — Thermodynamics</a>
+  <a href="#rp-vasp-compute" class="module-link">vasp/compute — VASP Engine</a>
+  <a href="#rp-vasp-errorhandle" class="module-link">vasp/errorhandle — Errors</a>
+  <a href="#rp-vasp-output" class="module-link">vasp/output — Parsing</a>
+  <a href="#rp-slab-adsorber" class="module-link">slab/adsorber — Adsorbates</a>
+  <a href="#rp-slab-builder" class="module-link">slab/builder — Slabs</a>
+  <a href="#rp-ocp-fairchem" class="module-link">ocp/fairchem_utils — FAIRChem</a>
+  <a href="#rp-ocp-lmdb" class="module-link">ocp/lmdb_io — LMDB I/O</a>
+
+  <h2>mace_al_glo Pipeline</h2>
+  <a href="#mal-pipeline" class="module-link">Pipeline Overview</a>
+  <a href="#mal-step0" class="module-link">step0 — Batch Dispatch</a>
+  <a href="#mal-step1" class="module-link">step1 — VASP SP Preparation</a>
+  <a href="#mal-step2" class="module-link">step2 — Relaxation Dispatch</a>
+  <a href="#mal-step3" class="module-link">step3 — Training Preparation</a>
+  <a href="#mal-run" class="module-link">run_local_* Scripts</a>
+  <a href="#mal-templates" class="module-link">Templates</a>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<main>
+
+<!-- ── OVERVIEW ── -->
+<h1 id="overview">rarepyth &amp; mace_al_glo</h1>
+<p>
+  <strong>rarepyth</strong> is a foundational Python library for computational materials science,
+  providing utilities for VASP job management, MACE machine-learning interatomic potentials,
+  slab/adsorbate structure generation, and FAIRChem integration.
+  <strong>mace_al_glo</strong> applies <code>rarepyth</code> in a multi-stage active-learning pipeline
+  for MACE-based global optimization of adsorption configurations on catalytic surfaces.
+</p>
+
+<table>
+<tr><th>Project</th><th>Description</th><th>Key Modules</th></tr>
+<tr>
+  <td><code>rarepyth</code></td>
+  <td>Core library: VASP compute engine, MACE optimizers, slab builders, FAIRChem integration, LMDB I/O</td>
+  <td>15 Python modules across 5 subpackages</td>
+</tr>
+<tr>
+  <td><code>mace_al_glo</code></td>
+  <td>Active learning pipeline: minima hopping → DFT evaluation → selective retraining</td>
+  <td>8 Python scripts &amp; 6 SLURM templates</td>
+</tr>
+</table>
+
+<h2 id="dependencies">Dependencies</h2>
+<p>
+  <code>mace_al_glo</code> imports from <code>rarepyth</code> via relative path manipulation.
+  Key third-party dependencies shared by both projects:
+</p>
+<ul>
+  <li><strong>ASE</strong> — Atomic Simulation Environment (structure I/O, optimizers, calculators)</li>
+  <li><strong>pymatgen</strong> — Python Materials Genomics (Structure, Molecule, symmetry analysis)</li>
+  <li><strong>MACE</strong> — Multi-ACE equivariant message-passing neural network</li>
+  <li><strong>FAIRChem / OCP</strong> — Open Catalyst Project models and LMDB datasets</li>
+  <li><strong>NumPy, SciPy, Pandas</strong> — Numerical &amp; statistical computing</li>
+</ul>
+
+<!-- ═══ RAREPYTH ═══ -->
+<h1 id="rp-base">rarepyth — Library Reference</h1>
+
+<!-- ── base ── -->
+<h2 id="rp-base">rarepyth.base</h2>
+<p>Core messaging system and shell command execution utilities.</p>
+
+<h3>Classes</h3>
+
+<h4><code>Message</code> <span class="tag tag-class">class</span></h4>
+<p>Rich message printing and state-tracking system. States include <code>Error</code>, <code>End</code>, and user-defined states.</p>
+<table>
+<tr><th>Method</th><th>Signature</th><th>Description</th></tr>
+<tr>
+  <td><code>__init__</code></td>
+  <td><span class="sig"><span class="prm">self</span>, <span class="prm">text</span>: <span class="tp">str</span>, <span class="prm">state</span>: <span class="tp">str</span> = <span class="kw">None</span></span></td>
+  <td>Initialize message with text and optional state</td>
+</tr>
+<tr>
+  <td><code>printm</code></td>
+  <td><span class="sig"><span class="prm">self</span></span></td>
+  <td>Print message prefixed with <code>rarepyth Message:</code></td>
+</tr>
+<tr>
+  <td><code>readm</code></td>
+  <td><span class="sig"><span class="fn">@classmethod</span> <span class="prm">cls</span>, <span class="prm">filename</span>: <span class="tp">str</span> → <span class="tp">Message</span></span></td>
+  <td>Parse latest <code>rarepyth Message</code> from a file</td>
+</tr>
+<tr>
+  <td><code>exitm</code></td>
+  <td><span class="sig"><span class="prm">self</span></span></td>
+  <td>Set state to Error, print, raise <code>MessageError</code></td>
+</tr>
+<tr>
+  <td><code>states_avail</code></td>
+  <td><span class="sig"><span class="fn">@msgstates</span> <span class="prm">states</span>: <span class="tp">list</span> → <span class="tp">list</span></span></td>
+  <td>Return list of available message states</td>
+</tr>
+<tr>
+  <td><code>add_new_states</code></td>
+  <td><span class="sig"><span class="fn">@classmethod</span> <span class="prm">cls</span>, <span class="prm">new_states</span>: <span class="tp">list</span></span></td>
+  <td>Append new states to class-level state list</td>
+</tr>
+</table>
+
+<h4><code>MessageError</code> <span class="tag tag-exc">exception</span></h4>
+<p>Exception wrapping a message string. Raised by <code>Message.exitm()</code>.</p>
+
+<h4><code>msgstates</code> <span class="tag tag-func">decorator</span></h4>
+<p>Decorator/callable managing a list of available message states. Wraps a function and passes <code>states_avail</code> argument.</p>
+
+<h3>Functions</h3>
+<table>
+<tr><th>Function</th><th>Signature</th><th>Description</th></tr>
+<tr>
+  <td><code>runcmd</code> <span class="badge badge-unix">Unix</span></td>
+  <td><span class="sig"><span class="prm">cmd</span>: <span class="tp">str | list</span>, <span class="prm">print_error</span>: <span class="tp">bool</span> = <span class="kw">True</span> → <span class="tp">str | None</span></span></td>
+  <td>Run shell command; exit on error if <code>print_error=True</code></td>
+</tr>
+<tr>
+  <td><code>checkcmd</code> <span class="badge badge-unix">Unix</span></td>
+  <td><span class="sig"><span class="prm">cmd</span>: <span class="tp">str | list</span> → <span class="tp">str | None</span></span></td>
+  <td>Run shell command with <code>check=True</code> (raises on failure)</td>
+</tr>
+</table>
+
+<!-- ── utils ── -->
+<h2 id="rp-utils">rarepyth.utils</h2>
+<p>General-purpose utility functions: directory creation, scoring metrics, periodic geometry operations, and selective atom fixing.</p>
+
+<h3>Functions</h3>
+<table>
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td><code>make_target_dir(path: str) -> None</code></td><td>Recursively create directory if it does not exist</td></tr>
+<tr><td><code>get_monoto_score(series) -> float</code></td><td>Monotonicity score: <code>|pos - neg| / max(pos, neg)</code> of successive differences</td></tr>
+<tr><td><code>get_range_score(series, extreme_ratio=0.05) -> float</code></td><td>Ratio of slope×n to trimmed range</td></tr>
+<tr><td><code>get_periodic_distance(coord_1, coord_2, matrix, coords_are_cartesian=False) -> float</code></td><td>Minimum image convention distance (searches 3³ translations)</td></tr>
+<tr><td><code>get_nearest_atoms(site, structure, tol=0.01, coords_are_cartesian=False) -> list</code></td><td>Find nearest periodic site(s) within tolerance</td></tr>
+<tr><td><code>fix_atoms_by_num(structure, selected_atoms, directions, relax_the_rest, in_place) -> Structure</code></td><td>Fix atoms by index with selective dynamics</td></tr>
+<tr><td><code>fix_atoms_by_height(structure, z_min, z_max, ...) -> Structure</code></td><td>Fix atoms whose Z-coordinate is in range</td></tr>
+<tr><td><code>fix_atoms_by_center_and_radius(structure, center, radius, ...) -> Structure</code></td><td>Fix atoms within a sphere (periodic distance)</td></tr>
+</table>
+
+<!-- ── mace/data_io ── -->
+<h2 id="rp-mace-dataio">rarepyth.mace.data_io</h2>
+<p>Extended XYZ (extxyz) file I/O for MACE training data. Converts VASP output to standardized extxyz, supports merging and splitting datasets.</p>
+
+<h3>Functions</h3>
+<table>
+<tr><th>Function</th><th>Signature</th><th>Description</th></tr>
+<tr>
+  <td><code>_read_and_standardize_xyz</code></td>
+  <td><span class="sig"><span class="prm">file_path</span>: <span class="tp">str</span> → <span class="tp">list[Atoms]</span></span></td>
+  <td>Read extxyz; standardize energy/forces/stress keys to ASE conventions</td>
+</tr>
+<tr>
+  <td><code>build_from_vasp</code></td>
+  <td><span class="sig"><span class="prm">vaspjob_dir</span>: <span class="tp">str</span>, <span class="prm">output_dir</span>, <span class="prm">output_name</span>, <span class="prm">tags</span>: <span class="tp">list</span> = <span class="kw">None</span>, <span class="prm">sampling_interval</span>: <span class="tp">int</span> = <span class="kw">0</span>, <span class="prm">maximum_sample</span>: <span class="tp">int</span> = <span class="kw">None</span>, <span class="prm">readfile</span>: <span class="tp">str</span> = <span class="kw">'OUTCAR'</span></span></td>
+  <td>Extract structures from VASP output, optionally sample trajectory, write extxyz</td>
+</tr>
+<tr>
+  <td><code>merge_xyz</code></td>
+  <td><span class="sig"><span class="prm">input_paths</span>: <span class="tp">str | list</span>, <span class="prm">output_dir</span>: <span class="tp">str</span>, <span class="prm">output_name</span>: <span class="tp">str</span> = <span class="kw">None</span></span></td>
+  <td>Merge .xyz files from directory or file list into single extxyz</td>
+</tr>
+<tr>
+  <td><code>split_xyz</code></td>
+  <td><span class="sig"><span class="prm">input_path</span>: <span class="tp">str</span>, <span class="prm">output_dir</span>: <span class="tp">str</span>, <span class="prm">method</span>: <span class="tp">str</span> = <span class="kw">'ratio'</span>, <span class="prm">value</span>: <span class="tp">float</span> = <span class="kw">0.8</span>, <span class="prm">seed</span>: <span class="tp">int</span> = <span class="kw">0</span> → <span class="tp">list</span></span></td>
+  <td>Split extxyz by ratio, length, or number of folds (shuffled)</td>
+</tr>
+</table>
+
+<!-- ── mace/matcher ── -->
+<h2 id="rp-mace-matcher">rarepyth.mace.matcher</h2>
+<p>Physical equivalence classifier for adsorbed structures. Implements a 4-step pipeline distinguishing chemisorption from physisorption, using graph theory and bond-topology analysis.</p>
+
+<h3>Workflow</h3>
+<div class="flow">
+  <span class="step">1. Energy Check</span>
+  <span class="arrow">→</span>
+  <span class="step">2. Internal Topology</span>
+  <span class="arrow">→</span>
+  <span class="step">3. Chemisorption Profile</span>
+  <span class="arrow">→</span>
+  <span class="step">4. Z-Height Profile</span>
+</div>
+<p>Steps 3 and 4 are mutually exclusive: two states are equivalent if they match on energy + topology + either chemisorption or physisorption profile.</p>
+
+<h3>Functions</h3>
+<table>
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td><code>get_mic_distance_matrix(p1, p2, cell, pbc) -> np.ndarray</code></td><td>Minimum image convention distance between two point sets</td></tr>
+<tr><td><code>detect_hydrogen_bonds(atoms, ads_idx, sub_idx, donor_elements, acceptor_elements, max_h_bond_dist, min_angle_deg) -> dict</code></td><td>Detect H-bonds between adsorbate and substrate; returns acceptor-type → normalized distances</td></tr>
+<tr><td><code>extract_signatures(atoms, ads_idx, sub_idx, intra_tol, chem_tol) -> tuple</code></td><td>Extract 3 signatures: internal adjacency matrix, chemisorption distance profiles, Z-height profile</td></tr>
+<tr><td><code>compare_chem_profiles(prof1, prof2, dev_tol, cutoff) -> bool</code></td><td>Compare chemisorption profiles with relative deviation tolerance</td></tr>
+<tr><td><code>compare_z_profiles(z1, z2, z_tol=0.5) -> bool</code></td><td>Compare Z-height distributions by max absolute difference</td></tr>
+<tr><td><strong><code>is_equivalent_state(atoms1, atoms2, energy1, energy2, ads_idx, sub_idx, ...) -> bool</code></strong></td><td><strong>Main entry point.</strong> Full 4-step equivalence determination</td></tr>
+</table>
+
+<!-- ── mace/optimizer ── -->
+<h2 id="rp-mace-optimizer">rarepyth.mace.optimizer</h2>
+<p>MACE-based geometry optimization, simulated annealing, minima hopping, and multi-strategy parallel global optimization. This is the largest module in the library.</p>
+
+<h3>Module Constants</h3>
+<table>
+<tr><th>Constant</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>AUTO_HOOKEAN_DIST</code></td><td><code>dict[frozenset, tuple]</code></td><td>Auto Hookean bond distances: C=1.89, N=1.88, C-O=1.97, C-H=1.20, C-N=1.79, H-O=1.20, N-O=1.82, N-H=1.20</td></tr>
+</table>
+
+<h3><code>MACEOptimizer</code> <span class="tag tag-class">class</span></h3>
+<p>Single-point energy and local relaxation using MACE calculator.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>__init__(model_paths, device, default_dtype, enable_cueq, dispersion)</code></td><td>Initialize MACE calculator with configurable precision and dispersion</td></tr>
+<tr><td><code>load_structure(filename: str)</code></td><td>Load structure from file; apply FixAtoms from selective_dynamics</td></tr>
+<tr><td><code>calc_relaxation(forces_criteria=0.05, max_steps=500) -> list[float]</code></td><td>FIRE2 local geometry relaxation; returns energies</td></tr>
+<tr><td><code>robust_relax(forces_criteria=0.005, temp_k=200, md_steps=2000) -> list[float]</code></td><td>Two-phase: Langevin MD thermal crawling + FIRE2 quenching</td></tr>
+<tr><td><code>simulated_annealing(start_temp_k=150, anneal_steps=2000, fmax_criteria=0.01) -> list[float]</code></td><td>10-stage linear cooling Langevin MD + FIRE2 quench</td></tr>
+</table>
+
+<h3><code>AdjustedMinimaHopping</code> <span class="tag tag-class">class</span></h3>
+<p>Extends ASE's <code>MinimaHopping</code> with configurable maximum optimization steps.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>__call__(totalsteps, maxtemp, max_optimize_steps)</code></td><td>Override ASE's call to support step limits</td></tr>
+<tr><td><code>_optimize()</code></td><td>Zero momenta, run optimizer with trajectory/log files, log energy</td></tr>
+</table>
+
+<h3><code>MACEGlobalOptimizer</code> <span class="tag tag-class">class</span></h3>
+<p>Single-thread global minima hopping orchestrator with constraint management.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>__init__(model_paths, device, default_dtype, enable_cueq, dispersion)</code></td><td>Initialize MACE calculator and constraint lists</td></tr>
+<tr><td><code>load_structure(filename: str)</code></td><td>Load structure with FixAtoms from selective_dynamics</td></tr>
+<tr><td><code>set_constraint_by_tagfile(tagfile, fixed_tags)</code></td><td>Fix atoms whose tag is in <code>fixed_tags</code></td></tr>
+<tr><td><code>set_hookean_constraint_by_tagfile(tagfile, adsorbate_tag)</code></td><td>Auto-add Hookean bonds within adsorbate (C-H, C-C, C-O, O-H)</td></tr>
+<tr><td><code>load_hookean_constraints(filename)</code></td><td>Parse HOOKEAN file (atom-atom or atom-plane format)</td></tr>
+<tr><td><code>auto_tether_surface_atoms(tagfile, adsorbate_tag, rest_radius, spring_constant, dz)</code></td><td>Auto-tether surface atoms with Hookean restraints</td></tr>
+<tr><td><code>run_minima_hopping(totalsteps, max_optimize_steps, unconstrained_fmax_threshold, ...)</code></td><td>Run minima hopping, filter by fmax, sort by energy, write MINIMA_EE &amp; POSCAR files</td></tr>
+</table>
+
+<h3><code>MultiGlobalOptimizer</code> <span class="tag tag-class">class</span></h3>
+<p>Multi-process orchestrator: runs multiple minima hopping strategies in parallel across GPU workers, then aggregates and clusters results using graph-theory equivalence analysis.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>__init__(model_path, initial_structure_path)</code></td><td>Initialize with model path and structure path</td></tr>
+<tr><td><code>add_strategy(strategy_name, totalsteps, max_optimize_steps, use_auto_tether, use_auto_hookean, ...)</code></td><td>Add a parameter set to the strategy grid</td></tr>
+<tr><td><code>_get_dynamic_worker_count(memory_per_worker_gb=8.0) -> int</code></td><td>Estimate concurrent workers from free GPU memory and CPU count</td></tr>
+<tr><td><code>run_parallel_exploration(manual_workers, memory_per_worker_gb)</code></td><td>Spawn multiprocessing workers for each strategy, then aggregate</td></tr>
+<tr><td><code>aggregate_and_sort_minima(adsorbate_tag, energy_tol, rel_dev_tol)</code></td><td>Collect results, cluster via <code>is_equivalent_state</code>, output deduplicated minima with coverage report</td></tr>
+</table>
+
+<!-- ── mace/thermo ── -->
+<h2 id="rp-mace-thermo">rarepyth.mace.thermo</h2>
+<p>Vibrational thermodynamics using MACE calculator and finite-displacement phonons.</p>
+
+<h3><code>MACEThermo</code> <span class="tag tag-class">class</span></h3>
+<table>
+<tr><th>Method</th><th>Signature</th><th>Description</th></tr>
+<tr><td><code>__init__</code></td><td><span class="sig"><span class="prm">model_path</span>, <span class="prm">structure_path</span>=<span class="kw">'POSCAR.vasp'</span>, <span class="prm">device</span>=<span class="kw">'cuda'</span>, <span class="prm">default_dtype</span>=<span class="kw">'float64'</span></span></td><td>Init MACE calculator and load structure</td></tr>
+<tr><td><code>get_vibrating_indices</code></td><td><span class="sig"><span class="prm">tag_file</span>: <span class="tp">str</span> = <span class="kw">'TAG'</span> → <span class="tp">list[int]</span></span></td><td>Identify free atoms for vibrational analysis</td></tr>
+<tr><td><code>run_thermo</code></td><td><span class="sig"><span class="prm">temperature</span>=<span class="kw">298.15</span>, <span class="prm">delta</span>=<span class="kw">0.01</span>, <span class="prm">cutoff_energy</span>=<span class="kw">0.0062</span> → <span class="tp">dict | None</span></span></td><td>Run finite-displacement phonon, compute ZPE, entropy, internal energy, Helmholtz free energy</td></tr>
+</table>
+
+<!-- ── vasp/compute ── -->
+<h2 id="rp-vasp-compute">rarepyth.vasp.compute</h2>
+<p>The core VASP computation engine (1500+ lines). Manages all VASP input/output files, job execution, supervised SCF convergence, ionic relaxation, and free energy calculation.</p>
+
+<h3>Module Data</h3>
+<table>
+<tr><th>Constant</th><th>Description</th></tr>
+<tr><td><code>DICT_RCMD</code></td><td>Recommended PAW potentials per element</td></tr>
+<tr><td><code>DICT_F</code></td><td>f-electron PAW potentials</td></tr>
+<tr><td><code>DICT_GW</code></td><td>GW-calibrated PAW potentials</td></tr>
+<tr><td><code>F_BLOCK, D_BLOCK</code></td><td>Sets of f-block and d-block elements</td></tr>
+<tr><td><code>U_VALUES</code></td><td>Hubbard U values for DFT+U (eV)</td></tr>
+</table>
+
+<h3><code>Incar(OrderedDict)</code> <span class="tag tag-class">class</span></h3>
+<p>VASP INCAR reader/writer as an ordered dictionary with type coercion.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>from_file(cls, INCAR) -> Incar</code></td><td>Parse INCAR file; auto-convert values to int/float/bool</td></tr>
+<tr><td><code>to_file(INCAR)</code></td><td>Write INCAR file</td></tr>
+<tr><td><code>erase(key)</code></td><td>Delete key if present</td></tr>
+</table>
+
+<h3><code>Poscar(Structure)</code> <span class="tag tag-class">class</span></h3>
+<p>Extends pymatgen <code>Structure</code> with layer finding, atom tagging, and selective dynamics.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>find_layers(error_tol=0.01)</code></td><td>Group atoms by Z-coordinate gaps into layers</td></tr>
+<tr><td><code>get_tags_by_layers()</code></td><td>Tag top-layer atoms as 1, others as 0</td></tr>
+<tr><td><code>read_tags_from_file(TAG)</code></td><td>Read 1-indexed tag assignments from file</td></tr>
+<tr><td><code>edit_tags(idxes, values)</code></td><td>Set tag values using vaspkit-style range syntax</td></tr>
+<tr><td><code>fix_atoms_by_tags(fixed_tags, directions)</code></td><td>Set selective_dynamics based on tag membership</td></tr>
+</table>
+
+<h3><code>Kpoints</code> <span class="tag tag-class">class</span></h3>
+<p>VASP KPOINTS representation with automatic gamma-centered generation.</p>
+
+<h3><code>Potcar</code> <span class="tag tag-class">class</span></h3>
+<p>VASP POTCAR representation. Auto-generates potential selections and concatenates actual POTCAR files <span class="badge badge-unix">Unix</span>.</p>
+
+<h3><code>VaspJob</code> <span class="tag tag-class">class</span></h3>
+<p>Main VASP job orchestrator. Manages all input/output files, checkpointing (tar archives), k-point generation, and job execution.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>from_files(cls, **kwargs) -> VaspJob</code></td><td>Read any subset of VASP files</td></tr>
+<tr><td><code>from_checkpoint(cls, checkpoint_path) -> VaspJob</code></td><td>Load from .vjz/.vjt tar archive</td></tr>
+<tr><td><code>save_checkpoint(checkpoint_path) -> str</code></td><td>Save current state to .vjt tar archive</td></tr>
+<tr><td><code>gene_potcar(option, spc_list)</code></td><td>Generate POTCAR via 4 strategies: recommended, f-electron, GW, or specified</td></tr>
+<tr><td><code>set_calc_details(start_option, dipole_correction, vdw, dft_u, u_values_dict)</code></td><td>Configure spin, dipole corrections, vdW, DFT+U</td></tr>
+<tr><td><code>ion_species</code> <span class="tag tag-prop">prop</span></td><td>Unique ion species from POSCAR</td></tr>
+<tr><td><code>ion_numbers</code> <span class="tag tag-prop">prop</span></td><td>Count per ion species</td></tr>
+<tr><td><code>num_electrons</code> <span class="tag tag-prop">prop</span> <span class="badge badge-unix">Unix</span></td><td>Total valence electron count from POTCAR ZVAL</td></tr>
+<tr><td><code>gene_kpoints(KMesh_resolved_value, scheme)</code> <span class="badge badge-unix">Unix</span></td><td>Generate KPOINTS via vaspkit</td></tr>
+<tr><td><code>run(popen, check_error, gamma_only, KPAR, NCORE, refresh_hosts)</code> <span class="badge badge-unix">Unix</span></td><td>Execute VASP via mpirun</td></tr>
+<tr><td><code>try_scf(**kwargs)</code> <span class="badge badge-unix">Unix</span></td><td>Supervised SCF convergence</td></tr>
+<tr><td><code>try_relax(**kwargs)</code> <span class="badge badge-unix">Unix</span></td><td>Supervised ionic relaxation</td></tr>
+<tr><td><code>get_free_energy(**kwargs)</code> <span class="badge badge-unix">Unix</span></td><td>Gibbs free energy calculation</td></tr>
+<tr><td><code>check_error()</code></td><td>Check convergence/error states; raise exceptions</td></tr>
+</table>
+
+<h3><code>ScfCalculator</code> <span class="tag tag-class">class</span></h3>
+<p>Supervised SCF convergence: tries multiple (ALGO, AMIX, BMIX) parameter sets with staged SIGMA reduction.</p>
+
+<h3><code>OptimizeCalculator</code> <span class="tag tag-class">class</span></h3>
+<p>Supervised ionic relaxation: iterates (IBRION, POTIM) pairs, monitors SCF convergence, auto-restarts.</p>
+
+<h3><code>FreeEnergyCalculator</code> <span class="tag tag-class">class</span></h3>
+<p>Gibbs free energy via finite-difference vibrational frequencies (IBRION=5, NFREE=2) with vaspkit thermal corrections.</p>
+
+<h3><code>DOSCalculator</code> <span class="tag tag-class">class</span></h3>
+<p>Skeleton for density-of-states calculation (tetrahedron method).</p>
+
+<!-- ── vasp/errorhandle ── -->
+<h2 id="rp-vasp-errorhandle">rarepyth.vasp.errorhandle</h2>
+<p>Exception hierarchy for VASP and slab job errors.</p>
+
+<h3>Exception Hierarchy</h3>
+<table>
+<tr><th>Exception</th><th>Parent</th><th>Description</th></tr>
+<tr><td><code>VaspJobError</code> <span class="tag tag-exc">base</span></td><td>Exception</td><td>Base VASP error</td></tr>
+<tr><td><code>ReadWavecarError</code></td><td>VaspJobError</td><td>WAVECAR mismatch</td></tr>
+<tr><td><code>FexcpError</code></td><td>VaspJobError</td><td>FEXCP error (POTCAR mismatch / poor structure)</td></tr>
+<tr><td><code>ZhegvError</code></td><td>VaspJobError</td><td>ZHEGV error (ALGO/structure)</td></tr>
+<tr><td><code>ZbrentError</code></td><td>VaspJobError</td><td>ZBRENT error (accuracy)</td></tr>
+<tr><td><code>VaspInterruptError</code></td><td>VaspJobError</td><td>Unexpected termination</td></tr>
+<tr><td><code>NotConvergedError</code></td><td>VaspJobError</td><td>SCF convergence failure (stores count)</td></tr>
+<tr><td><code>SlabJobError</code> <span class="tag tag-exc">base</span></td><td>Exception</td><td>Base slab error</td></tr>
+<tr><td><code>StaticConvergeFailedError</code></td><td>SlabJobError</td><td>Static slab convergence failure</td></tr>
+<tr><td><code>RelaxedConvergeFailedError</code></td><td>SlabJobError</td><td>Relaxed slab convergence failure</td></tr>
+</table>
+
+<!-- ── vasp/output ── -->
+<h2 id="rp-vasp-output">rarepyth.vasp.output</h2>
+<p>Parsers for VASP OSZICAR and OUTCAR output files.</p>
+
+<h3><code>Oszicar</code> <span class="tag tag-class">class</span></h3>
+<p>Parses OSZICAR, extracting ionic and electronic step data.</p>
+<table>
+<tr><th>Property / Method</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>read(cls, OSZICAR) -> Oszicar</code></td><td>@classmethod</td><td>Parse OSZICAR; supports DAV/RMM/CG/SDA algorithms</td></tr>
+<tr><td><code>num_ionic_steps</code></td><td>int</td><td>Number of ionic steps</td></tr>
+<tr><td><code>num_elect_steps</code></td><td>list[int]</td><td>Electronic steps per ionic step</td></tr>
+<tr><td><code>ionic_energies</code></td><td>list[float]</td><td>E0 per ionic step</td></tr>
+<tr><td><code>ionic_energies_diff</code></td><td>list[float]</td><td>dE per ionic step</td></tr>
+<tr><td><code>elect_energies</code></td><td>list[list[float]]</td><td>Total energy per electronic step</td></tr>
+<tr><td><code>eps_energies_diff</code></td><td>list[list[float]]</td><td>BPSOS energy difference per electronic step</td></tr>
+</table>
+
+<h3><code>Outcar</code> <span class="tag tag-class">class</span></h3>
+<p>Parses OUTCAR, extracting convergence status, structures, forces, and charges.</p>
+<table>
+<tr><th>Property</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>ions_per_type</code></td><td>list[int]</td><td>Ion counts per species</td></tr>
+<tr><td><code>ions_species</code></td><td>list[str]</td><td>Ion species from VRHFIN</td></tr>
+<tr><td><code>elect_converged</code></td><td>bool</td><td>SCF convergence status</td></tr>
+<tr><td><code>num_elect_inconvergence</code></td><td>int</td><td>Count of non-converged SCF loops</td></tr>
+<tr><td><code>num_ionic_steps</code></td><td>int</td><td>Count of POSITION blocks</td></tr>
+<tr><td><code>ionic_converged</code></td><td>bool</td><td>Whether required accuracy reached</td></tr>
+<tr><td><code>list_relaxtion_structures</code></td><td>list[Structure]</td><td>All ionic step structures</td></tr>
+<tr><td><code>is_normal_terminated</code></td><td>bool</td><td>"General timing" footer found</td></tr>
+<tr><td><code>error_info</code></td><td>str | None</td><td>Error message from EEEEEEE line</td></tr>
+<tr><td><code>total_charge</code></td><td>list | None</td><td>Bader charges</td></tr>
+<tr><td><code>get_filtered_forces_list(slt_dynamics)</code></td><td>method</td><td>Force magnitude per atom per ionic step</td></tr>
+<tr><td><code>get_max_filtered_forces(**kwargs)</code></td><td>method</td><td>Max force per ionic step</td></tr>
+</table>
+
+<!-- ── slab/adsorber ── -->
+<h2 id="rp-slab-adsorber">rarepyth.slab.adsorber</h2>
+<p>Adsorbate placement, molecule rotation, and RMSD deduplication on catalytic surfaces.</p>
+
+<h3>Module Data</h3>
+<table>
+<tr><th>Constant</th><th>Description</th></tr>
+<tr><td><code>Adsorbates: dict</code></td><td>Predefined molecules: H, CO, CO₂, COOH, OCHO, H₂O, OH, NH₃</td></tr>
+<tr><td><code>Adsorption_avail_elements: set</code></td><td>65 element symbols valid for adsorption site filtering</td></tr>
+</table>
+
+<h3>Functions</h3>
+<table>
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td><code>slab_from_file(filename) -> Structure</code></td><td>Read bulk structure, generate (001) slab</td></tr>
+<tr><td><code>find_filtered_adsorption_sites(slab, filtered_atoms, tol, find_args) -> list</code></td><td>Find adsorption sites with nearest neighbor in filtered elements</td></tr>
+<tr><td><code>generate_adsorption_structures_by_sites(slab, adsorbate, sites, repeat, min_lw, translate, reorient) -> list</code></td><td>Place adsorbate at each site with auto supercell repeat</td></tr>
+<tr><td><code>load_molecule_from_file(filename) -> Molecule</code></td><td>Load molecule from VASP/CIF file</td></tr>
+<tr><td><code>align_molecule_z_to_zero(mol) -> Molecule</code></td><td>Shift molecule so minimum Z = 0</td></tr>
+<tr><td><code>generate_rotated_molecules(mol, step_degrees=45.0) -> list[Molecule]</code></td><td>Generate all Euler-angle rotations at given step</td></tr>
+<tr><td><code>get_permutation_invariant_rmsd(mol1, mol2) -> float</code></td><td>Permutation-invariant RMSD using Hungarian algorithm per element</td></tr>
+<tr><td><code>remove_duplicate_molecules_robust(molecules, rmsd_tol=0.1) -> list[Molecule]</code></td><td>Deduplicate rotated molecules by permutation-invariant RMSD</td></tr>
+</table>
+
+<!-- ── slab/builder ── -->
+<h2 id="rp-slab-builder">rarepyth.slab.builder</h2>
+<p>Slab construction with fractional layer cutting, normalization, and automated convergence testing.</p>
+
+<h3><code>SlabGeneratorFracional(SlabGenerator)</code> <span class="tag tag-class">class</span></h3>
+<p>Extended slab generator supporting fractional slab thickness with integer stoichiometry multiples.</p>
+
+<h3>Functions</h3>
+<table>
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td><code>adjust_vacuum_layer(slab, vacuum) -> Structure</code></td><td>Adjust vacuum gap by scaling c-axis</td></tr>
+<tr><td><code>normalize_slab(structure) -> Structure</code></td><td>Normalize so c-axis is orthogonal to a-b plane</td></tr>
+<tr><td><code>generate_miller_slabs(structure, miller, min_slab_size, vacuum, ...) -> list[Slab]</code></td><td>Generate all non-equivalent slabs for a Miller index</td></tr>
+</table>
+
+<h3><code>ConvergedSlabBuilder</code> <span class="tag tag-class">class</span> <span class="badge badge-unix">Unix</span></h3>
+<p>Automated slab convergence testing via VASP.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>bulk_energy_per_atom</code> <span class="tag tag-prop">prop</span></td><td>Energy per atom of oriented unit cell</td></tr>
+<tr><td><code>static_converge_test(start_slab_size, step_size, max_loop)</code></td><td>Iteratively increase thickness until surface energy converges (0.001 eV/Å²)</td></tr>
+<tr><td><code>get_static_converged_slabs(min_slab_size, vacuum) -> list[Slab]</code></td><td>Return converged non-equivalent slabs sorted by energy</td></tr>
+<tr><td><code>relaxed_converge_test(min_slab_size, vacuum, step_size, max_loop)</code></td><td>Find relaxed surface energy convergence</td></tr>
+</table>
+
+<!-- ── ocp/fairchem_utils ── -->
+<h2 id="rp-ocp-fairchem">rarepyth.ocp.fairchem_utils</h2>
+<p>FAIRChem (Open Catalyst Project) integration: training, prediction, thermodynamics, relaxation, and global optimization using OCP models.</p>
+
+<h3><code>FairchemJob</code> <span class="tag tag-class">class</span></h3>
+<p>FAIRChem model training and prediction orchestrator.</p>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>from_yml(cls, yml_path) -> FairchemJob</code></td><td>Load config from YAML</td></tr>
+<tr><td><code>from_checkpoint(cls, checkpoint_path, overwrite) -> FairchemJob</code></td><td>Load from checkpoint with config overrides; detects equiformer_v2</td></tr>
+<tr><td><code>load_datasets(train_set_path, valid_set_path, test_set_path, keep_normalizer)</code></td><td>Configure and load LMDB datasets; auto-compute mean/std for new data</td></tr>
+<tr><td><code>train(disable_eval_tqdm, break_when_achieve_best, do_extra_epoches, ...)</code></td><td>Enhanced training with early stopping on validation plateau</td></tr>
+<tr><td><code>evaluate(disable_tqdm) -> dict</code></td><td>Run prediction on test set; save to .npz</td></tr>
+<tr><td><code>predict(disable_tqdm) -> dict</code></td><td>Simple prediction wrapper</td></tr>
+</table>
+
+<h3><code>FairchemThermo</code> <span class="tag tag-class">class</span></h3>
+<p>Vibrational thermodynamics using FAIRChem calculator.</p>
+
+<h3><code>FairchemOptimizer</code> <span class="tag tag-class">class</span></h3>
+<p>BFGS local geometry relaxation using OCPCalculator.</p>
+
+<h3><code>FairchemGlobalOptimizer</code> <span class="tag tag-class">class</span></h3>
+<p>Global minima hopping using FAIRChem with constraint management.</p>
+
+<!-- ── ocp/lmdb_io ── -->
+<h2 id="rp-ocp-lmdb">rarepyth.ocp.lmdb_io</h2>
+<p>LMDB dataset I/O for FAIRChem training data: building from VASP, merging, splitting, and chemical classification.</p>
+
+<h3>Module Constants</h3>
+<table>
+<tr><th>Constant</th><th>Description</th></tr>
+<tr><td><code>PERODIC_TABLE</code></td><td>First 83 elements as list of strings</td></tr>
+<tr><td><code>NON_METAL</code></td><td>Set of non-metal elements for classification</td></tr>
+</table>
+
+<h3>Functions</h3>
+<table>
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td><code>build_from_vasp(vaspjob_dir, output_dir, tags, sid, test_set, sampling_interval, maximum_sample, readfile)</code></td><td>Convert VASP OUTCAR trajectory to LMDB pickled PyG objects</td></tr>
+<tr><td><code>merge_specified_lmdb(input_files, output_dir, output_name)</code></td><td>Merge specific LMDB files</td></tr>
+<tr><td><code>merge_lmdb(input_path, output_dir, output_name)</code></td><td>Recursively merge all .lmdb files in directory</td></tr>
+<tr><td><code>read_lmdb_formulas(path) -> list[str]</code></td><td>Chemical formulas of all structures in an LMDB</td></tr>
+<tr><td><code>classify_lmdb_by_chem(input_path, output_dir, length, seed) -> list</code></td><td>Split into 8 categories: {alloy, compound} × {CNHO, NHO, CHO, OH}</td></tr>
+<tr><td><code>devide_lmdb_by_length(input_path, output_dir, length, seed) -> list</code></td><td>Split into fixed-size chunks</td></tr>
+<tr><td><code>devide_lmdb_by_folds(input_path, output_dir, folds, seed) -> list</code></td><td>Split into k equal folds</td></tr>
+<tr><td><code>cut_lmdb(input_path, output_dir, split_point, seed) -> list</code></td><td>Split by ratio</td></tr>
+<tr><td><code>build_sid_dict(dft_files_path, output_path, output_name)</code></td><td>Build YAML dict mapping system IDs to directory paths</td></tr>
+</table>
+
+<!-- ═══ MACE_AL_GLO PIPELINE ═══ -->
+<h1 id="mal-pipeline">mace_al_glo — Active Learning Pipeline</h1>
+
+<h2 id="mal-pipeline">Pipeline Overview</h2>
+<p>
+  MACE Active Learning Global Optimization (AL-GLO) is an iterative 4-stage pipeline that
+  generates adsorption configurations, screens them with MACE minima hopping, evaluates
+  MACE vs DFT predictive quality, and selectively retrains the model on the worst-performing
+  structures.
+</p>
+
+<div class="flow">
+  <span class="step">Step 0<br>Minima Hopping</span>
+  <span class="arrow">→</span>
+  <span class="step">Step 1<br>VASP SP Prep</span>
+  <span class="arrow">→</span>
+  <span class="step">Step 2<br>DFT Relaxation</span>
+  <span class="arrow">→</span>
+  <span class="step">Step 3<br>MACE Training</span>
+  <span class="arrow">→</span>
+  <span class="step">Iterate</span>
+</div>
+
+<p><strong>Iteration tracking:</strong> A file named <code>ITER</code> stores the current iteration number. It increments after each training cycle. At iteration 0, the foundation model is <code>mace_mp_medium.model</code>; subsequent iterations use the fine-tuned model from the previous round.</p>
+
+<p><strong>Cross-cluster workflow:</strong> The pipeline is designed for heterogeneous HPC environments — MACE runs on GPU nodes (minima hopping, training) while VASP DFT runs on CPU nodes. tar.gz archives shuttle data between clusters.</p>
+
+<!-- ── Step 0 ── -->
+<h2 id="mal-step0">step0_mh.py — Batch Dispatch of Minima Hopping</h2>
+
+<h3>Purpose</h3>
+<p>Generates the Cartesian product of selected slab surfaces and adsorbate molecules, then dispatches each system as a SLURM job for parallel local minima hopping with MACE.</p>
+
+<h3>Flow</h3>
+<ol>
+  <li>Validate <code>workbench/slabs/</code> and <code>workbench/molecules/</code> exist</li>
+  <li>Read ITER counter to determine checkpoint path (<code>ft_iter{N-1}.model</code> or <code>mace_mp_medium.model</code>)</li>
+  <li>Create timestamped work directory: <code>work_YYYY-MM-DD-HH-MM-SS/mh/</code></li>
+  <li><strong>2D strided random sampling:</strong> Select <code>slab_batch</code> slabs and <code>molecule_batch</code> molecules</li>
+  <li>For each slab × molecule pair, create a subdirectory containing:
+    <ul>
+      <li>Slab POSCAR, adsorbate molecule file</li>
+      <li><code>run_mh.py</code> and <code>run_mh.sh</code> templates</li>
+      <li><code>CHECKPOINT_PATH</code> file pointing to the model</li>
+    </ul>
+  </li>
+  <li>Print SLURM sbatch commands (for manual submission or piping)</li>
+</ol>
+
+<h3>Key Parameters</h3>
+<table>
+<tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>slab_batch</code></td><td>1</td><td>Number of slabs to sample per iteration</td></tr>
+<tr><td><code>molecule_batch</code></td><td>3</td><td>Number of molecules to sample per iteration</td></tr>
+</table>
+
+<!-- ── Step 1 ── -->
+<h2 id="mal-step1">step1_sp.py — VASP Single-Point Preparation</h2>
+
+<h3>Purpose</h3>
+<p>Extracts the top unique minima from each system's MACE global optimization results and packages them for VASP single-point DFT evaluation on a CPU cluster.</p>
+
+<h3>Flow</h3>
+<ol>
+  <li>Read TIMESTAMP_ID to locate current work directory</li>
+  <li>For each system in <code>work_*/mh/</code>, open <code>FINAL_GLOBAL_MINIMA/FINAL_MINIMA_EE</code></li>
+  <li>Select top 20% unique minima (minimum 6) by energy</li>
+  <li>Copy each selected geometry to <code>work_*/sp/{system}_UNIQUE_{idx}/</code>
+    with TAG file, <code>vasp_sp.py</code>, <code>vasp_sp.sh</code>, and <code>INCAR.ini</code></li>
+  <li>Package all SP directories into <code>vasp_sp_tasks_{timestamp}.tar.gz</code></li>
+</ol>
+
+<h3>Output</h3>
+<ul>
+  <li>tar.gz archive for cross-cluster transfer</li>
+  <li><code>FINAL_MINIMA_EE</code> contains MACE-predicted energies for all unique minima</li>
+</ul>
+
+<!-- ── Step 2 ── -->
+<h2 id="mal-step2">step2_rlx.py — Relaxation Task Dispatcher</h2>
+
+<h3>Purpose</h3>
+<p>Evaluates MACE vs DFT predictive quality using ranking correlation metrics, then selects the worst-performing structures for full VASP DFT relaxation. This is the core <strong>active learning</strong> decision step.</p>
+
+<h3>Evaluation Metrics</h3>
+<table>
+<tr><th>Metric</th><th>Description</th></tr>
+<tr><td><strong>Spearman's ρ</strong></td><td>Rank correlation between MACE and DFT energy rankings</td></tr>
+<tr><td><strong>Kendall's τ</strong></td><td>Rank correlation (concordant/discordant pairs)</td></tr>
+<tr><td><strong>Top-1 hit rate</strong></td><td>Does MACE rank the DFT global minimum as #1?</td></tr>
+<tr><td><strong>Top-3 hit rate</strong></td><td>Is the DFT global minimum in MACE's top 3?</td></tr>
+<tr><td><strong>MACE rank of DFT min</strong></td><td>1-indexed rank of the DFT global minimum in MACE's ordering</td></tr>
+<tr><td><strong>Local DDE MAE</strong></td><td>Mean absolute error of MACE vs DFT relative energies within the dynamic window from MACE's predicted minimum to DFT minimum</td></tr>
+</table>
+
+<h3>Active Learning Selection</h3>
+<p>
+  Systems are sorted by <code>LOCAL_DDE_MAE_eV</code> descending.
+  Systems with MAE ≥ 0.15 eV are dispatched for VASP relaxation
+  (up to <code>rlx_batch</code> structures). Each relaxation directory includes
+  <code>vasp_relax.py</code>, <code>vasp_relax.sh</code>, <code>INCAR.ini</code>, <code>POSCAR.vasp</code>, and <code>TAG</code>.
+</p>
+
+<h3>Output Files</h3>
+<table>
+<tr><th>File</th><th>Description</th></tr>
+<tr><td><code>energy_details_iter{N}.csv</code></td><td>Per-system detailed energy comparison</td></tr>
+<tr><td><code>energy_summary_iter{N}.csv</code></td><td>Aggregated summary statistics per iteration</td></tr>
+<tr><td><code>vasp_rlx_tasks_{timestamp}.tar.gz</code></td><td>Packaged relaxation tasks for CPU cluster</td></tr>
+</table>
+
+<h3>Key Parameters</h3>
+<table>
+<tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>rlx_batch</code></td><td>20</td><td>Maximum structures to dispatch per iteration</td></tr>
+<tr><td>MAE threshold</td><td>0.15 eV</td><td>Minimum DDE MAE for active learning selection</td></tr>
+</table>
+
+<!-- ── Step 3 ── -->
+<h2 id="mal-step3">step3_train.py — MACE Training Preparation</h2>
+
+<h3>Purpose</h3>
+<p>Collects all DFT relaxation trajectories, merges them into the training dataset, and prepares the MACE fine-tuning configuration.</p>
+
+<h3>Flow</h3>
+<ol>
+  <li>Walk <code>work_*/rlx/</code> and collect all <code>traj.xyz</code> files</li>
+  <li>Copy trajectories to <code>all_set/</code> with naming: <code>iter{N}_{struct_dir}.xyz</code></li>
+  <li>Create <code>work_*/train/</code> with:
+    <ul>
+      <li><code>data_source.txt</code> — points to all_set_dir and current ITER</li>
+      <li><code>mace_train.py</code> and <code>mace_train.sh</code> templates</li>
+    </ul>
+  </li>
+  <li>Print SLURM submission command</li>
+</ol>
+
+<!-- ── run_local_* ── -->
+<h2 id="mal-run">run_local_serial_mh.py &amp; run_local_mace_train.py</h2>
+
+<h3><code>run_local_serial_mh.py</code></h3>
+<p>Distributed local minima hopping executor for environments without SLURM. Distributes system directories across multiple GPU nodes/containers using a JSON mapping file.</p>
+<table>
+<tr><th>Function</th><th>Signature</th><th>Description</th></tr>
+<tr><td><code>run_distributed_mh</code></td><td><span class="sig"><span class="prm">node_id</span>: <span class="tp">int</span>, <span class="prm">total_nodes</span>: <span class="tp">int</span></span></td><td>Read/create <code>DISTRIBUTION.json</code>, assign tasks, execute sequentially with subprocess</td></tr>
+</table>
+<p><strong>CLI:</strong> <code>python run_local_serial_mh.py --node_id 0 --total_nodes 3</code></p>
+
+<h3><code>run_local_mace_train.py</code></h3>
+<p>Local MACE training launcher (non-SLURM). Runs training as a subprocess with PyTorch warning filtering.</p>
+<table>
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td><code>launch_mace_train()</code></td><td>Read TIMESTAMP_ID, run mace_train.py as subprocess, filter FutureWarning/UserWarning, log to file</td></tr>
+</table>
+
+<!-- ── Templates ── -->
+<h2 id="mal-templates">Templates</h2>
+
+<h3><code>templates/run_mh.py</code> — Per-System Full Workflow</h3>
+<p>The most complex template. Orchestrates three phases for each slab+molecule system:</p>
+
+<h4>Phase 1: Seed Configuration Generation</h4>
+<ol>
+  <li>Rotate the adsorbate molecule (Euler angles, 45° steps)</li>
+  <li>Deduplicate rotated molecules via permutation-invariant RMSD</li>
+  <li>Find filtered adsorption sites on the slab surface</li>
+  <li>Compute MACE single-point energies for all configurations</li>
+  <li>Select top 4 lowest-energy seeds</li>
+</ol>
+
+<h4>Phase 2: Parallel Minima Hopping</h4>
+<ol>
+  <li>For each of the 4 seeds, create <code>Top{rank}_{idx}_{jdx}/</code> directory</li>
+  <li>Generate TAG, HOOKEAN, and POSCAR restraints</li>
+  <li>Dynamically write <code>sub_run_mh.py</code> calling <code>MultiGlobalOptimizer</code> with 2 strategies:
+    <ul>
+      <li><strong>aggressive_600</strong> — 600 minima hopping steps</li>
+      <li><strong>extreme_1200</strong> — 1200 minima hopping steps</li>
+    </ul>
+  </li>
+  <li>Launch all 4 as parallel subprocesses (each spawning 2 workers = 8 total GPU workers)</li>
+</ol>
+
+<h4>Phase 3: Final Aggregation</h4>
+<p>Reads all <code>Top*</code> directory results, performs graph-theory secondary clustering using <code>is_equivalent_state</code> from <code>rarepyth.mace.matcher</code>, outputs deduplicated global minima with energy ranking.</p>
+
+<h4>Helper Functions</h4>
+<table>
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td><code>get_ram_used_mb() -> float</code></td><td>Read /proc/meminfo for RAM usage</td></tr>
+<tr><td><code>monitor_resources(stop_event, interval, log_file)</code></td><td>Thread: log RAM, GPU VRAM, GPU utilization periodically</td></tr>
+<tr><td><code>generate_constraint_files(ads_struct, slab_len, target_dir)</code></td><td>Generate TAG (slab=0, adsorbate=2) and HOOKEAN (plane at slab_max_z + 6.0, spring=10.0)</td></tr>
+<tr><td><code>perform_final_aggregation(work_root, output_dir, adsorbate_tag, energy_tol, rel_dev_tol)</code></td><td>Cross-seed secondary clustering via <code>is_equivalent_state</code></td></tr>
+</table>
+
+<h3><code>templates/mace_train.py</code> — MACE Fine-Tuning</h3>
+<table>
+<tr><th>Step</th><th>Description</th></tr>
+<tr><td>1. Read config</td><td>Parse <code>data_source.txt</code> for ALL_SET_DIR and CURRENT_ITER</td></tr>
+<tr><td>2. Determine foundation</td><td>Iter 0 → <code>mace_mp_medium.model</code>; iter N → <code>ft_iter{N-1}.model</code></td></tr>
+<tr><td>3. Merge data</td><td>Merge all .xyz files in all_set_dir into single merged.xyz</td></tr>
+<tr><td>4. Split data</td><td>5-fold split; fold 0 = validation, folds 1–4 = training</td></tr>
+<tr><td>5. Dynamic hyperparams</td><td>Batch/epochs scale with dataset size: &lt;200→(2,300), &lt;1000→(4,300), &lt;3000→(8,200), &lt;10000→(16,150), else (32,120)</td></tr>
+<tr><td>6. Train</td><td>MACE with energy_weight=100, forces_weight=1, lr=0.002, swa_lr=0.0005, max_L=2, num_interactions=3, AMSGrad, float64, CUDA, CUEq</td></tr>
+<tr><td>7. Export</td><td>Copy trained model to <code>filtered_checkpoints/</code></td></tr>
+<tr><td>8. Increment</td><td>Write ITER+1 to ITER file</td></tr>
+</table>
+
+<h3><code>templates/vasp_sp.py</code> — VASP Single-Point Energy</h3>
+<p>DFT single-point energy calculation: reads INCAR.ini, creates Poscar with TAG-based FixAtoms, sets ISPIN=2, EDIFF=1e-5, gamma-centered kpoints (30/a minimum), f-electron POTCAR with DFT+U, runs supervised SCF.</p>
+
+<h3><code>templates/vasp_relax.py</code> — VASP Local Relaxation</h3>
+<p>DFT ionic relaxation: fixes slab atoms (tags 0, 1), only relaxes adsorbate (tag 2), same SCF/DFT+U settings as SP, runs supervised relaxation with extreme convergence preset.</p>
+
+<h3>SLURM Scripts</h3>
+<table>
+<tr><th>Script</th><th>Corresponding Python</th><th>Node Type</th></tr>
+<tr><td><code>run_mh.sh</code></td><td><code>run_mh.py</code></td><td>GPU (1 GPU, 16 cores, 64 GB)</td></tr>
+<tr><td><code>mace_train.sh</code></td><td><code>mace_train.py</code></td><td>GPU (1 GPU, 32 cores, 256 GB)</td></tr>
+<tr><td><code>vasp_sp.sh</code></td><td><code>vasp_sp.py</code></td><td>CPU (32 cores, 128 GB)</td></tr>
+<tr><td><code>vasp_relax.sh</code></td><td><code>vasp_relax.py</code></td><td>CPU (32 cores, 128 GB)</td></tr>
+</table>
+
+<h3><code>templates/INCAR.ini</code></h3>
+<p>Shared VASP INCAR template with commented sections for electronic relaxation (ENCUT=450, EDIFF=1e-7, ALGO=Normal), ionic relaxation (EDIFFG=-0.02, NSW=100, IBRION=2, ISIF=2, POTIM=0.5), DOS (ISMEAR=0), and optional spin/dipole/vdW/DFT+U.</p>
+
+<!-- ── FOOTER ── -->
+<hr style="margin-top: 60px; border-color: var(--border);">
+<p style="color: #8b949e; font-size: 13px;">
+  Generated documentation for <code>rarepyth</code> and <code>mace_al_glo</code>.
+</p>
+
+</main>
+
+<script>
+// Sidebar active link tracking
+(function() {
+  const links = document.querySelectorAll('nav#sidebar a');
+  const headings = [];
+  links.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) headings.push({el, id, link: a});
+  });
+  document.addEventListener('scroll', () => {
+    let current = headings[0]?.id;
+    for (const h of headings) {
+      if (h.el.getBoundingClientRect().top <= 100) current = h.id;
+    }
+    links.forEach(a => a.classList.remove('active'));
+    const active = document.querySelector(`nav#sidebar a[href="#${current}"]`);
+    if (active) active.classList.add('active');
+  });
+  document.querySelector('nav#sidebar a[href="#overview"]').classList.add('active');
+})();
+</script>
+</body>
+</html>
